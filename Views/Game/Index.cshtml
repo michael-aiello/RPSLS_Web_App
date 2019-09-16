@@ -22,14 +22,39 @@
 </ul>
 <form asp-controller="Game" asp-action="Index">
     <div class="container form-group" style="padding: 10px">
-        <input class="btn btn-primary btn-sm" type="submit" value="Rock" name="userChoice" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Paper" name="userChoice" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Scissors" name="userChoice" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Lizard" name="userChoice" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Spock" name="userChoice" />
+        <input class="btn btn-primary btn-sm" type="submit" value="Rock" name="userSelection" />
+        <input class="btn btn-primary btn-sm" type="submit" value="Paper" name="userSelection" />
+        <input class="btn btn-primary btn-sm" type="submit" value="Scissors" name="userSelection" />
+        <input class="btn btn-primary btn-sm" type="submit" value="Lizard" name="userSelection" />
+        <input class="btn btn-primary btn-sm" type="submit" value="Spock" name="userSelection" />
     </div>
 </form>
 
+@if (!String.IsNullOrEmpty(ViewData["UserSelection"].ToString()))
+{
+    <div>
+        <p>@ViewData["userSelection"]</p>
+    </div>
+    <div>
+        <p>@ViewData["AiSelection"]</p>
+    </div>
+}
+
+
 <div>
-    <p>@ViewData["userSelection"]</p>
+    @if (!String.IsNullOrEmpty(ViewData["Winner"].ToString()))
+    {
+        <p>@ViewData["Winner"]</p>
+    }
+
+    else if (!String.IsNullOrEmpty(ViewData["Loser"].ToString()))
+    {
+        <p>@ViewData["Loser"]</p>
+    }
+
+    else
+    {
+        <p>@ViewData["Draw"]</p>
+    }
+
 </div>
