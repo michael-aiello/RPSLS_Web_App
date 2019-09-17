@@ -6,47 +6,63 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RPSLS_Web_App.Models;
+using RPSLS_Web_App.Models.ViewModels;
 
 namespace RPSLS_Web_App.Controllers
 {
     public class GameController : Controller
     {
-        public IActionResult Index(string userSelection)
+        public IActionResult Index(string userSelection, int p1win, int p1lose, int p1draw, int p2win, int p2lose, int p2draw)
         {
+            //int test = id;
             String[] weapons = new string[] { "Scissors", "Paper", "Rock", "Lizard", "Spock" };
-            ViewData["Winner"] = "";
-            ViewData["Loser"] = "";
-            ViewData["Draw"] = "";
-            ViewData["UserSelection"] = "";
-            ViewData["AiSelection"] = "";
-
             Game thisGame = new Game();
+            GameRound gameRound = new GameRound();
+            gameRound.PlayerWins = p1win;
+            gameRound.PlayerLosses = p1lose;
+            gameRound.PlayerDraws = p1draw;
+            gameRound.AiWins = p2win;
+            gameRound.AiLosses = p2lose;
+            gameRound.AiDraws = p2draw;
+
+            gameRound.UserSelection = userSelection;
+            gameRound.AiSelection = thisGame.GetAiSelection();
+
             
-            String aiSelection = thisGame.GetAiSelection();
             if(!String.IsNullOrEmpty(userSelection))
             {
-                ViewData["UserSelection"] = "The user has selected: " + userSelection;
-                ViewData["AiSelection"] = "Sheldon has selected: " + aiSelection;
+                gameRound.PlayerSelectionString = "The user has selected: " + gameRound.UserSelection;
+                gameRound.AiSelectionString = "Sheldon has selected: " + gameRound.AiSelection;
             }
            
            
 
             if (!String.IsNullOrEmpty(userSelection))
             {
-                int result = thisGame.GetWinner(weapons, userSelection, aiSelection);
+                int result = thisGame.GetWinner(weapons, gameRound.UserSelection, gameRound.AiSelection);
 
                 switch (result)
                 {
                     case 1:
-                        ViewData["Winner"] = userSelection + " defeats " + aiSelection + " you win!";
+                        gameRound.Verb = thisGame.GetVerb(gameRound.UserSelection, gameRound.AiSelection);
+                        gameRound.Winner = gameRound.UserSelection + " " + gameRound.Verb + " " + gameRound.AiSelection + " you win!";
+                        gameRound.PlayerWins++;
+                        gameRound.AiLosses++;
+                        //ViewData["Verb"] = thisGame.GetVerb(userSelection, aiSelection);
                         //Console.WriteLine("{0} pwns {1}. You're a winner!", userSelection, aiSelection);
                         break;
                     case 0:
-                        ViewData["Draw"] = "Draw";
+                        gameRound.Draw = "Draw";
+                        gameRound.AiDraws++;
+                        gameRound.PlayerDraws++;
                         //Console.WriteLine("Draw!");
                         break;
                     case -1:
-                        ViewData["Loser"] = aiSelection + " defeats " + userSelection + " you lose!";
+                        gameRound.Verb = thisGame.GetVerb(gameRound.AiSelection, gameRound.UserSelection);
+                        gameRound.Loser = gameRound.AiSelection + " " + gameRound.Verb + " " + gameRound.UserSelection + " you lose!";
+                        gameRound.PlayerLosses++;
+                        gameRound.AiWins++;
+                        //ViewData["Verb"] = thisGame.GetVerb(aiSelection, userSelection);
                         //Console.WriteLine("{0} pwns {1}. You're a loser!", aiSelection, userSelection);
                         break;
                 }
@@ -55,7 +71,7 @@ namespace RPSLS_Web_App.Controllers
 
             
 
-            return View();
+            return View(gameRound);
         }
     }
 
@@ -99,6 +115,41 @@ namespace RPSLS_Web_App.Controllers
 
             for (int i = index + 1; i < weapons.Length; i += 2)
                 yield return weapons[i];
+        }
+
+        public string GetVerb(string weapon1, string weapon2)
+        {
+            if (weapon1.Equals("Scissors") && weapon2.Equals("Paper"))
+                return "cuts";
+
+            if (weapon1.Equals("Paper") && weapon2.Equals("Rock"))
+                return "covers";
+
+            if (weapon1.Equals("Rock") && weapon2.Equals("Lizard"))
+                return "crushes";
+
+            if (weapon1.Equals("Lizard") && weapon2.Equals("Spock"))
+                return "poisons";
+
+            if (weapon1.Equals("Spock") && weapon2.Equals("Scissors"))
+                return "smashes";
+
+            if (weapon1.Equals("Scissors") && weapon2.Equals("Lizard"))
+                return "decapitates";
+
+            if (weapon1.Equals("Lizard") && weapon2.Equals("Paper"))
+                return "eats";
+
+            if (weapon1.Equals("Paper") && weapon2.Equals("Spock"))
+                return "disproves";
+
+            if (weapon1.Equals("Spock") && weapon2.Equals("Rock"))
+                return "vaporizez";
+
+            if (weapon1.Equals("Rock") && weapon2.Equals("Scissors"))
+                return "crushes";
+
+            return "";
         }
     }
 }

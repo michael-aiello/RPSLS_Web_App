@@ -1,10 +1,12 @@
-﻿@{
+﻿@model RPSLS_Web_App.Models.ViewModels.GameRound
+
+@{
     ViewData["Title"] = "Game";
 }
 
 <h1>Rock, Paper, Scissors, Lizard, Spock</h1>
 <h2>Rules:</h2>
-
+@{ int i = 0;}
 <p>
     The game is an expansion on the game Rock, Paper, Scissors. Each player picks a variable and reveals it at the same time. The winner is the one who defeats the others. In a tie, the process is repeated until a winner is found.<br />
 </p>
@@ -20,8 +22,16 @@
     <li>Spock vaporizes Rock</li>
     <li>Rock crushes Scissors</li>
 </ul>
+
+
 <form asp-controller="Game" asp-action="Index">
     <div class="container form-group" style="padding: 10px">
+        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerWins name="p1win" />
+        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerLosses name="p1lose" />
+        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerDraws name="p1draw" />
+        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiWins name="p2win" />
+        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiLosses name="p2lose" />
+        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiDraws name="p2draw" />
         <input class="btn btn-primary btn-sm" type="submit" value="Rock" name="userSelection" />
         <input class="btn btn-primary btn-sm" type="submit" value="Paper" name="userSelection" />
         <input class="btn btn-primary btn-sm" type="submit" value="Scissors" name="userSelection" />
@@ -30,31 +40,66 @@
     </div>
 </form>
 
-@if (!String.IsNullOrEmpty(ViewData["UserSelection"].ToString()))
+@if (!String.IsNullOrEmpty(Model.UserSelection))
 {
+    @*<div>
+            <p>@ViewData["userSelection"]</p>
+        </div>
+        <div>
+            <p>@ViewData["AiSelection"]</p>
+        </div>*@
     <div>
-        <p>@ViewData["userSelection"]</p>
+        <p>@Model.PlayerSelectionString</p>
     </div>
     <div>
-        <p>@ViewData["AiSelection"]</p>
+        <p>@Model.AiSelectionString</p>
     </div>
+
 }
 
 
 <div>
-    @if (!String.IsNullOrEmpty(ViewData["Winner"].ToString()))
+    @if (!String.IsNullOrEmpty(Model.Winner))
     {
-        <p>@ViewData["Winner"]</p>
+        <p>@Model.Winner</p>
+       
+                
     }
 
-    else if (!String.IsNullOrEmpty(ViewData["Loser"].ToString()))
+    else if (!String.IsNullOrEmpty(Model.Loser))
     {
-        <p>@ViewData["Loser"]</p>
+        <p>@Model.Loser</p>
+       
     }
 
     else
     {
-        <p>@ViewData["Draw"]</p>
+        <p>@Model.Draw</p>
+       
     }
 
+</div>
+
+<div>
+    <h2>Current Game</h2>
+    <table>
+        <tr>
+            <th>Player</th>
+            <th>Wins</th>
+            <th>Loses</th>
+            <th>Draws</th>
+        </tr>
+        <tr>
+            <th>Player1</th>
+            <th>@Model.PlayerWins</th>
+            <th>@Model.PlayerLosses</th>
+            <th>@Model.PlayerDraws</th>
+        </tr>
+        <tr>
+            <th>AI Player</th>
+            <th>@Model.AiWins</th>
+            <th>@Model.AiLosses</th>
+            <th>@Model.AiDraws</th>
+        </tr>
+    </table>
 </div>
