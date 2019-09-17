@@ -12,21 +12,62 @@ namespace RPSLS_Web_App.Controllers
 {
     public class GameController : Controller
     {
-        public IActionResult Index(string userSelection, int p1win, int p1lose, int p1draw, int p2win, int p2lose, int p2draw)
+        private readonly RPSLS_Web_AppContext _context;
+
+        public GameController(RPSLS_Web_AppContext context)
         {
-            //int test = id;
-            String[] weapons = new string[] { "Scissors", "Paper", "Rock", "Lizard", "Spock" };
+            _context = context;
+        }
+
+       
+        public async Task<IActionResult> Index(string userName, string userSelection, int p1win, int p1lose, int p1draw, int p2win, int p2lose, int p2draw)
+        {
+            Player aiPlayer = _context.Player.Where(s => s.ID == 1).FirstOrDefault();
+            Player humanPlayer = new Player();
             Game thisGame = new Game();
             GameRound gameRound = new GameRound();
-            gameRound.PlayerWins = p1win;
-            gameRound.PlayerLosses = p1lose;
-            gameRound.PlayerDraws = p1draw;
-            gameRound.AiWins = p2win;
-            gameRound.AiLosses = p2lose;
-            gameRound.AiDraws = p2draw;
+            if (!String.IsNullOrEmpty(userName))
+            {
+                humanPlayer = _context.Player.Where(s => s.Name.Equals(userName)).FirstOrDefault();
+                if (humanPlayer == null)
+                {
+                    humanPlayer = new Player
+                    {
+                        Name = userName,
+                        Wins = 0,
+                        Losses = 0,
+                        Draws = 0
 
-            gameRound.UserSelection = userSelection;
-            gameRound.AiSelection = thisGame.GetAiSelection();
+                    };
+                    _context.Add(humanPlayer);
+                    await _context.SaveChangesAsync();
+                }
+               
+                gameRound.Players.Add(aiPlayer);
+                gameRound.Players.Add(humanPlayer);
+                gameRound.PlayerWins = p1win;
+                gameRound.PlayerLosses = p1lose;
+                gameRound.PlayerDraws = p1draw;
+                gameRound.AiWins = p2win;
+                gameRound.AiLosses = p2lose;
+                gameRound.AiDraws = p2draw;
+                gameRound.HumanPlayer = humanPlayer;
+                gameRound.UserSelection = userSelection;
+                gameRound.AiSelection = thisGame.GetAiSelection();
+                if(!String.IsNullOrEmpty(userSelection))
+                {
+                    gameRound.AiImageUrl = thisGame.GetImage(gameRound.AiSelection);
+                    gameRound.HumanImageUrl = thisGame.GetImage(userSelection);
+                }
+               
+            }
+            
+
+            
+            
+            //int test = id;
+            String[] weapons = new string[] { "Scissors", "Paper", "Rock", "Lizard", "Spock" };
+            
 
             
             if(!String.IsNullOrEmpty(userSelection))
@@ -48,22 +89,31 @@ namespace RPSLS_Web_App.Controllers
                         gameRound.Winner = gameRound.UserSelection + " " + gameRound.Verb + " " + gameRound.AiSelection + " you win!";
                         gameRound.PlayerWins++;
                         gameRound.AiLosses++;
-                        //ViewData["Verb"] = thisGame.GetVerb(userSelection, aiSelection);
-                        //Console.WriteLine("{0} pwns {1}. You're a winner!", userSelection, aiSelection);
+                        humanPlayer.Wins++;
+                        aiPlayer.Losses++;
+                        _context.UpdateRange(gameRound.Players);
+                        await _context.SaveChangesAsync();
+                       
                         break;
                     case 0:
                         gameRound.Draw = "Draw";
                         gameRound.AiDraws++;
                         gameRound.PlayerDraws++;
-                        //Console.WriteLine("Draw!");
+                        humanPlayer.Draws++;
+                        aiPlayer.Draws++;
+                        _context.UpdateRange(gameRound.Players);
+                        await _context.SaveChangesAsync();
                         break;
                     case -1:
                         gameRound.Verb = thisGame.GetVerb(gameRound.AiSelection, gameRound.UserSelection);
                         gameRound.Loser = gameRound.AiSelection + " " + gameRound.Verb + " " + gameRound.UserSelection + " you lose!";
                         gameRound.PlayerLosses++;
                         gameRound.AiWins++;
-                        //ViewData["Verb"] = thisGame.GetVerb(aiSelection, userSelection);
-                        //Console.WriteLine("{0} pwns {1}. You're a loser!", aiSelection, userSelection);
+                        humanPlayer.Losses++;
+                        aiPlayer.Wins++;
+                        _context.UpdateRange(gameRound.Players);
+                        await _context.SaveChangesAsync();
+
                         break;
                 }
             }
@@ -150,6 +200,20 @@ namespace RPSLS_Web_App.Controllers
                 return "crushes";
 
             return "";
+        }
+
+        public string GetImage(string weapon)
+        {
+            if (weapon.Equals("Rock"))
+                return "/images/rock.svg";
+            if (weapon.Equals("Paper"))
+                return "/images/paper.svg";
+            if (weapon.Equals("Scissors"))
+                return "/images/scissors.svg";
+            if (weapon.Equals("Lizard"))
+                return "/images/lizard.svg";
+            else
+                return "/images/spock.svg";
         }
     }
 }

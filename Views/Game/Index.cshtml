@@ -4,102 +4,221 @@
     ViewData["Title"] = "Game";
 }
 
+
 <h1>Rock, Paper, Scissors, Lizard, Spock</h1>
-<h2>Rules:</h2>
-@{ int i = 0;}
-<p>
-    The game is an expansion on the game Rock, Paper, Scissors. Each player picks a variable and reveals it at the same time. The winner is the one who defeats the others. In a tie, the process is repeated until a winner is found.<br />
-</p>
-<ul>
-    <li>Scissors cuts Paper</li>
-    <li>Paper covers Rock</li>
-    <li>Rock crushes Lizard</li>
-    <li>Lizard poisons Spock</li>
-    <li>Spock smashes Scissors</li>
-    <li>Scissors decapitates Lizard</li>
-    <li>Lizard eats Paper</li>
-    <li>Paper disproves Spock</li>
-    <li>Spock vaporizes Rock</li>
-    <li>Rock crushes Scissors</li>
-</ul>
 
+<p>Enter a new or existing user to start game</p>
 
-<form asp-controller="Game" asp-action="Index">
-    <div class="container form-group" style="padding: 10px">
-        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerWins name="p1win" />
-        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerLosses name="p1lose" />
-        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerDraws name="p1draw" />
-        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiWins name="p2win" />
-        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiLosses name="p2lose" />
-        <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiDraws name="p2draw" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Rock" name="userSelection" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Paper" name="userSelection" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Scissors" name="userSelection" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Lizard" name="userSelection" />
-        <input class="btn btn-primary btn-sm" type="submit" value="Spock" name="userSelection" />
-    </div>
-</form>
-
-@if (!String.IsNullOrEmpty(Model.UserSelection))
+@if (Model.Players.Count < 2)
 {
-    @*<div>
-            <p>@ViewData["userSelection"]</p>
-        </div>
-        <div>
-            <p>@ViewData["AiSelection"]</p>
-        </div>*@
-    <div>
-        <p>@Model.PlayerSelectionString</p>
+    <div class="container">
+        <form class="form-inline mr-auto" asp-controller="Game" asp-action="Index" autocomplete="off">
+            <input class="form-control mr-sm-2" type="text" name="userName" placeholder="User Name" aria-label="Play">
+            <button class="btn btn-primary rounded btn-sm my-0" type="submit">Play</button>
+        </form>
     </div>
-    <div>
-        <p>@Model.AiSelectionString</p>
-    </div>
+
 
 }
 
+else
+{
+    <div class="container">
+        <p>
+            @*<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Link with href
+                </a>*@
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Show/Hide Rules
+            </button>
+        </p>
+    </div>
 
-<div>
+
+    <div class="collapse container" id="collapseExample">
+        <div class="card card-body">
+            <h2>Rules:</h2>
+            <p>
+                The game is an expansion on the game Rock, Paper, Scissors. Each player picks a variable and reveals it at the same time. The winner is the one who defeats the others. In a tie, the process is repeated until a winner is found.<br />
+            </p>
+            <div class="container">
+                <div class="row">
+                    <ul class="col-6">
+                        <li>Scissors cuts Paper</li>
+                        <li>Paper covers Rock</li>
+                        <li>Rock crushes Lizard</li>
+                        <li>Lizard poisons Spock</li>
+                        <li>Spock smashes Scissors</li>
+                        <li>Scissors decapitates Lizard</li>
+                        <li>Lizard eats Paper</li>
+                        <li>Paper disproves Spock</li>
+                        <li>Spock vaporizes Rock</li>
+                        <li>Rock crushes Scissors</li>
+                    </ul>
+                    <div class="col-6">
+                        <img src="~/images/Rock_paper_scissors_lizard_spock.png" />
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="container">
+        <h4>Please select a weapon</h4>
+        <form asp-controller="Game" asp-action="Index">
+            <div class="container form-group" style="padding-top:10px; padding-bottom:10px; padding-left:0">
+                <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerWins name="p1win" />
+                <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerLosses name="p1lose" />
+                <input class="btn btn-primary btn-sm" type="hidden" value=@Model.PlayerDraws name="p1draw" />
+                <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiWins name="p2win" />
+                <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiLosses name="p2lose" />
+                <input class="btn btn-primary btn-sm" type="hidden" value=@Model.AiDraws name="p2draw" />
+                <input class="btn btn-primary btn-sm" type="hidden" value=@Model.HumanPlayer.Name name="userName" />
+                <input class="btn btn-primary btn-sm" type="submit" value="Rock" name="userSelection" />
+                <input class="btn btn-primary btn-sm" type="submit" value="Paper" name="userSelection" />
+                <input class="btn btn-primary btn-sm" type="submit" value="Scissors" name="userSelection" />
+                <input class="btn btn-primary btn-sm" type="submit" value="Lizard" name="userSelection" />
+                <input class="btn btn-primary btn-sm" type="submit" value="Spock" name="userSelection" />
+
+            </div>
+
+        </form>
+    </div>
+
+
+    @if (!String.IsNullOrEmpty(Model.UserSelection))
+    {
+        @*<div>
+                <p>@ViewData["userSelection"]</p>
+            </div>
+            <div>
+                <p>@ViewData["AiSelection"]</p>
+            </div>*@
+        <div>
+            <p>@Model.PlayerSelectionString</p>
+        </div>
+        <div>
+            <p>@Model.AiSelectionString</p>
+        </div>
+
+    }
+
     @if (!String.IsNullOrEmpty(Model.Winner))
     {
-        <p>@Model.Winner</p>
-       
-                
+        <img src=@Model.HumanImageUrl.ToString() height="80" width="80" />
+        <span style="color:blue; font-size: 25px"> <strong>@Model.Verb</strong> </span>
+        <img src=@Model.AiImageUrl.ToString() height="80" width="80" />
     }
-
-    else if (!String.IsNullOrEmpty(Model.Loser))
+    else if(!String.IsNullOrEmpty(Model.Loser))
     {
-        <p>@Model.Loser</p>
-       
+        <img src=@Model.AiImageUrl.ToString() height="80" width="80" />
+        <span style="color:blue; font-size: 25px"> <strong>@Model.Verb</strong> </span>
+        <img src=@Model.HumanImageUrl.ToString() height="80" width="80" />
     }
 
-    else
-    {
-        <p>@Model.Draw</p>
-       
-    }
+    <div>
+        @if (!String.IsNullOrEmpty(Model.Winner))
+        {
+            <p>@Model.Winner</p>
 
-</div>
 
-<div>
-    <h2>Current Game</h2>
-    <table>
-        <tr>
-            <th>Player</th>
-            <th>Wins</th>
-            <th>Loses</th>
-            <th>Draws</th>
-        </tr>
-        <tr>
-            <th>Player1</th>
-            <th>@Model.PlayerWins</th>
-            <th>@Model.PlayerLosses</th>
-            <th>@Model.PlayerDraws</th>
-        </tr>
-        <tr>
-            <th>AI Player</th>
-            <th>@Model.AiWins</th>
-            <th>@Model.AiLosses</th>
-            <th>@Model.AiDraws</th>
-        </tr>
-    </table>
-</div>
+        }
+
+        else if (!String.IsNullOrEmpty(Model.Loser))
+        {
+            <p>@Model.Loser</p>
+
+        }
+
+        else
+        {
+            <p>@Model.Draw</p>
+
+        }
+
+    </div>
+
+    <div class="row">
+        <div class="card card-body col-6">
+            <h2>Current Game</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Wins</th>
+                        <th>Loses</th>
+                        <th>Draws</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sheldon(AI)</td>
+                        <td>@Model.AiWins</td>
+                        <td>@Model.AiLosses</td>
+                        <td>@Model.AiDraws</td>
+                    </tr>
+                    <tr>
+                        <td>@Model.HumanPlayer.Name</td>
+                        <td>@Model.PlayerWins</td>
+                        <td>@Model.PlayerLosses</td>
+                        <td>@Model.PlayerDraws</td>
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+        </div>
+
+
+
+        <div class="card card-body col-6">
+            <h2>Player Records</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Wins</th>
+                        <th>Loses</th>
+                        <th>Draws</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Players)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Wins)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Losses)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Draws)
+                            </td>
+
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" style="padding-top:10px">
+        <form asp-controller="Game" asp-action="Index">
+            <input class="btn btn-info btn-sm" type="submit" value="New Game" />
+        </form>
+    </div>
+}
+
+

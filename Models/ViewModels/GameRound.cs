@@ -23,7 +23,10 @@ namespace RPSLS_Web_App.Models.ViewModels
             this.AiWins = 0;
             this.AiLosses = 0;
             this.AiDraws = 0;
+            this.HumanPlayer = new Player();
             this.Players = new List<Player>();
+            this.HumanImageUrl = String.Empty;
+            this.AiImageUrl = String.Empty;
         }
         public string UserSelection { get; set; }
         public String AiSelection { get; set; }
@@ -45,6 +48,11 @@ namespace RPSLS_Web_App.Models.ViewModels
         public int AiLosses { get; set; }
         public int AiDraws { get; set; }
 
+        public Player HumanPlayer { get; set; }
+
         public List<Player> Players { get; set; }
+
+        public string HumanImageUrl { get; set; }
+        public string AiImageUrl { get; set; }
     }
 }
